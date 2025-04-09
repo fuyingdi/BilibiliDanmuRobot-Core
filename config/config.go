@@ -26,6 +26,7 @@ type Config struct {
 	// AI聊天相关
 	TalkRobotCmd  string   `json:",default=test"`                                // 机器人聊天关键字
 	FuzzyMatchCmd bool     `json:",default=false"`                               // 模糊匹配关键字
+	RobotAtUser   bool     `json:",default=false"`                               // 机器人回复是否@用户
 	RobotName     string   `json:",default=花花"`                                  // 机器人名称
 	RobotMode     string   `json:",default=QingYunKe,options=QingYunKe|ChatGPT"` // 机器人服务
 	ChatGPT       struct { // GPT的配置

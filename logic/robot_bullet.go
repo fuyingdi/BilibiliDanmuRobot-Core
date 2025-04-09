@@ -2,12 +2,13 @@ package logic
 
 import (
 	"context"
+	"regexp"
+	"strings"
+
 	"github.com/xbclub/BilibiliDanmuRobot-Core/entity"
 	"github.com/xbclub/BilibiliDanmuRobot-Core/http"
 	"github.com/xbclub/BilibiliDanmuRobot-Core/svc"
 	"github.com/zeromicro/go-zero/core/logx"
-	"regexp"
-	"strings"
 )
 
 var robot *BulletRobot
@@ -49,24 +50,39 @@ func handleRobotBullet(content entity.Bullet, svcCtx *svc.ServiceContext) {
 	if svcCtx.Config.RobotMode == "ChatGPT" {
 		if reply, err = http.RequestChatgptRobot(content.Msg, svcCtx); err != nil {
 			logx.Errorf("请求机器人失败：%v", err)
-			PushToBulletSender("不好意思，机器人坏掉了...", content.Reply...)
+			if svcCtx.Config.RobotAtUser {
+				PushToBulletSender("不好意思，机器人坏掉了...", content.Reply...)
+			} else {
+				PushToBulletSender("不好意思，机器人坏掉了...")
+			}
 			return
 		}
 	} else {
 		if reply, err = http.RequestQingyunkeRobot(content.Msg); err != nil {
 			logx.Errorf("请求机器人失败：%v", err)
-			PushToBulletSender("不好意思，机器人坏掉了...", content.Reply...)
+			if svcCtx.Config.RobotAtUser {
+				PushToBulletSender("不好意思，机器人坏掉了...", content.Reply...)
+			} else {
+				PushToBulletSender("不好意思，机器人坏掉了...")
+			}
 			return
 		}
 		bulltes := splitRobotReply(reply, svcCtx)
 		for _, v := range bulltes {
-			PushToBulletSender(v, content.Reply...)
+			if svcCtx.Config.RobotAtUser {
+				PushToBulletSender(v, content.Reply...)
+			} else {
+				PushToBulletSender(v)
+			}
 		}
 		return
 	}
-	PushToBulletSender(reply, content.Reply...)
+	if svcCtx.Config.RobotAtUser {
+		PushToBulletSender(reply, content.Reply...)
+	} else {
+		PushToBulletSender(reply)
+	}
 	logx.Infof("机器人回复：%s", reply)
-
 }
 
 // 将机器人回复语句中的 {br} 进行分割
