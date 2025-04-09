@@ -3,15 +3,15 @@ package svc
 import (
 	"fmt"
 
+	"github.com/fuyingdi/BilibiliDanmuRobot-Core/config"
+	"github.com/fuyingdi/BilibiliDanmuRobot-Core/model"
 	"github.com/glebarez/sqlite"
-	"github.com/xbclub/BilibiliDanmuRobot-Core/config"
-	"github.com/xbclub/BilibiliDanmuRobot-Core/model"
 	"gorm.io/gorm"
 )
 
 type ServiceContext struct {
-	Config       *config.Config
-	OtherSideUid map[int64]bool
+	Config            *config.Config
+	OtherSideUid      map[int64]bool
 	SignInModel       model.SignInModel
 	DanmuCntModel     model.DanmuCntModel
 	BlindBoxStatModel model.BlindBoxStatModel
@@ -31,7 +31,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		panic(err)
 	}
 	return &ServiceContext{
-		OtherSideUid: make(map[int64]bool),
+		OtherSideUid:      make(map[int64]bool),
 		SignInModel:       model.NewSignInModel(db, int64(c.RoomId)),
 		DanmuCntModel:     model.NewDanmuCntModel(db, int64(c.RoomId)),
 		BlindBoxStatModel: model.NewBlindBoxStatModel(db, int64(c.RoomId)),
