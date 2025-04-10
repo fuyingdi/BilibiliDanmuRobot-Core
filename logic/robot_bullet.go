@@ -50,38 +50,22 @@ func handleRobotBullet(content entity.Bullet, svcCtx *svc.ServiceContext) {
 	if svcCtx.Config.RobotMode == "ChatGPT" {
 		if reply, err = http.RequestChatgptRobot(content.Msg, svcCtx); err != nil {
 			logx.Errorf("请求机器人失败：%v", err)
-			if svcCtx.Config.RobotAtUser {
-				PushToBulletSender("不好意思，机器人坏掉了...", content.Reply...)
-			} else {
-				PushToBulletSender("不好意思，机器人坏掉了...")
-			}
+			PushToBulletSender("不好意思，机器人坏掉了...")
 			return
 		}
 	} else {
 		if reply, err = http.RequestQingyunkeRobot(content.Msg); err != nil {
 			logx.Errorf("请求机器人失败：%v", err)
-			if svcCtx.Config.RobotAtUser {
-				PushToBulletSender("不好意思，机器人坏掉了...", content.Reply...)
-			} else {
-				PushToBulletSender("不好意思，机器人坏掉了...")
-			}
+			PushToBulletSender("不好意思，机器人坏掉了...")
 			return
 		}
 		bulltes := splitRobotReply(reply, svcCtx)
 		for _, v := range bulltes {
-			if svcCtx.Config.RobotAtUser {
-				PushToBulletSender(v, content.Reply...)
-			} else {
-				PushToBulletSender(v)
-			}
+			PushToBulletSender(v)
 		}
 		return
 	}
-	if svcCtx.Config.RobotAtUser {
-		PushToBulletSender(reply, content.Reply...)
-	} else {
-		PushToBulletSender(reply)
-	}
+	PushToBulletSender(reply)
 	logx.Infof("机器人回复：%s", reply)
 }
 
